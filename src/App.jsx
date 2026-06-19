@@ -1,17 +1,42 @@
 import { useState, useEffect } from 'react';
-import { FiSun, FiMoon, FiExternalLink } from 'react-icons/fi';
-import { FaLinkedin, FaGithub, FaTwitter, FaBook } from 'react-icons/fa';
+import { FiSun, FiMoon, FiExternalLink, FiMail, FiPhone } from 'react-icons/fi';
+import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaBook } from 'react-icons/fa';
 import { FaXTwitter } from 'react-icons/fa6';
 import { SiJavascript, SiPython, SiReact, SiNodedotjs, SiTailwindcss, SiMongodb } from 'react-icons/si';
+import ProjectCard from './ProjectCard';
 import './index.css';
 import './skills.css';
 
 function App() {
   const [theme, setTheme] = useState('dark');
 
+  const [activeSection, setActiveSection] = useState('intro');
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  // Optional: Update active section on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['intro', 'skills', 'projects', 'about', 'contact'];
+      const scrollPosition = window.scrollY + 100; // offset
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const top = element.offsetTop;
+          const height = element.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(section);
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleTheme = (newTheme) => {
     setTheme(newTheme);
@@ -22,11 +47,11 @@ function App() {
       <aside className="sidebar">
         <div className="sidebar-content">
           <nav className="sidebar-nav">
-            <div className="nav-item active">AN</div>
-            <div className="nav-item">SKILLS</div>
-            <div className="nav-item">PROJECTS</div>
-            <div className="nav-item">ABOUT</div>
-            <div className="nav-item">CONTACT</div>
+            <a href="#intro" className={`nav-item ${activeSection === 'intro' ? 'active' : ''}`} onClick={() => setActiveSection('intro')}>AN</a>
+            <a href="#skills" className={`nav-item ${activeSection === 'skills' ? 'active' : ''}`} onClick={() => setActiveSection('skills')}>SKILLS</a>
+            <a href="#projects" className={`nav-item ${activeSection === 'projects' ? 'active' : ''}`} onClick={() => setActiveSection('projects')}>PROJECTS</a>
+            <a href="#about" className={`nav-item ${activeSection === 'about' ? 'active' : ''}`} onClick={() => setActiveSection('about')}>ABOUT</a>
+            <a href="#contact" className={`nav-item ${activeSection === 'contact' ? 'active' : ''}`} onClick={() => setActiveSection('contact')}>CONTACT</a>
           </nav>
 
           <div className="theme-toggle">
@@ -133,6 +158,83 @@ function App() {
                 <SiMongodb color="#47A248" size={32} />
                 <SiTailwindcss color="#06B6D4" size={32} />
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="projects-section" id="projects">
+          <h2 className="section-title">Projects</h2>
+          <div className="projects-grid">
+            <ProjectCard 
+              title="Finance Tracker App" 
+              description="A Full Stack application for managing & tracking finances with user-friendly account creation and smooth operation."
+              link="#"
+            />
+            <ProjectCard 
+              title="Image Generator" 
+              description="An image generator that uses Cloudflare Workers AI to generate images and the Hono framework for the JavaScript runtime"
+              link="https://image-generator-smoky.vercel.app/"
+            />
+          </div>
+        </section>
+
+        <section className="about-section" id="about">
+          <h2 className="section-title">About</h2>
+          <div className="timeline">
+            <div className="timeline-item">
+              <div className="timeline-dot"></div>
+              <div className="timeline-content">
+                <h3 className="timeline-title">M.Tech CSE</h3>
+                <p className="timeline-subtitle">IIT BHU</p>
+              </div>
+            </div>
+            
+            <div className="timeline-item">
+              <div className="timeline-dot"></div>
+              <div className="timeline-content">
+                <h3 className="timeline-title">B.Tech CSE</h3>
+                <p className="timeline-subtitle">Siksha 'O' Anusandhan</p>
+              </div>
+            </div>
+
+            <div className="timeline-item">
+              <div className="timeline-dot"></div>
+              <div className="timeline-content">
+                <h3 className="timeline-title">High School Education</h3>
+                <p className="timeline-subtitle">Doon High School</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="contact-section" id="contact">
+          <h2 className="section-title">Contact</h2>
+          
+          <div className="contact-grid">
+            <div className="contact-info">
+              <a href="mailto:anshulniggi@gmail.com" className="contact-link">
+                <FiMail className="contact-icon" />
+                <span>anshulniggi@gmail.com</span>
+              </a>
+              <a href="tel:+91987654321" className="contact-link">
+                <FiPhone className="contact-icon" />
+                <span>+91 987654321</span>
+              </a>
+            </div>
+
+            <div className="social-links-grid">
+              <a href="#" className="social-box" aria-label="LinkedIn">
+                <FaLinkedin size={24} />
+              </a>
+              <a href="#" className="social-box" aria-label="GitHub">
+                <FaGithub size={24} />
+              </a>
+              <a href="#" className="social-box" aria-label="X / Twitter">
+                <FaXTwitter size={24} />
+              </a>
+              <a href="#" className="social-box" aria-label="Instagram">
+                <FaInstagram size={24} />
+              </a>
             </div>
           </div>
         </section>

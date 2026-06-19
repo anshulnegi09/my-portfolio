@@ -1,0 +1,73 @@
+.project-card {
+  position: relative;
+  width: 400px;
+  height: 440px;
+  cursor: pointer;
+  color: var(--border-color); /* The outline color */
+  transition: transform 0.2s ease;
+  margin-top: 2rem;
+  display: block;
+  text-decoration: none;
+}
+
+.project-card svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.project-card .card-fill,
+.project-card .tab-fill {
+  transition: fill 0.4s ease;
+}
+
+.project-card:hover .card-fill,
+.project-card:hover .tab-fill {
+  fill: var(--border-color); /* Light background on hover */
+}
+
+/* On light theme hover, border-color is #1A1A1A, which might be dark. The requirement said "transitions from dark to light (the one in light theme)".
+Wait, if border-color in dark mode is #CECECE, it will transition to #CECECE, which is light grey. */
+
+.project-card:hover .front-tab {
+  transform: translateX(63.789px); /* Slide exactly to the right edge of the middle tab */
+}
+
+/* Ensure front tab slides smoothly as a group */
+.front-tab {
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Card Content */
+.card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 3rem 2.5rem;
+  z-index: 2;
+  color: var(--text-color);
+  transition: color 0.4s ease;
+}
+
+.project-card:hover .card-content {
+  color: var(--bg-color); /* Text changes to dark color for contrast */
+}
+
+.project-title {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.project-desc {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  opacity: 0.9;
+}

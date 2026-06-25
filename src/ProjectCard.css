@@ -3,11 +3,16 @@
   width: 400px;
   height: 440px;
   cursor: pointer;
-  color: var(--border-color); /* The outline color */
+  color: var(--border-color);
   transition: transform 0.2s ease;
   margin-top: 2rem;
   display: block;
   text-decoration: none;
+}
+
+.card-bg {
+  position: absolute;
+  inset: 0;
 }
 
 .project-card svg {
@@ -19,6 +24,7 @@
   z-index: 1;
 }
 
+/* SVG fill transitions */
 .project-card .card-fill,
 .project-card .tab-fill {
   transition: fill 0.4s ease;
@@ -26,61 +32,200 @@
 
 .project-card:hover .card-fill,
 .project-card:hover .tab-fill {
-  fill: var(--border-color); /* Light background on hover */
+  fill: var(--accent-primary);
 }
 
-/* On light theme hover, border-color is #1A1A1A, which might be dark. The requirement said "transitions from dark to light (the one in light theme)".
-Wait, if border-color in dark mode is #CECECE, it will transition to #CECECE, which is light grey. */
-
+/* Front tab slide */
 .project-card:hover .front-tab {
-  transform: translateX(63.789px); /* Slide exactly to the right edge of the middle tab */
+  transform: translateX(63.789px);
 }
 
-/* Ensure front tab slides smoothly as a group */
 .front-tab {
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Card Content */
+/* SVG label divider */
+.label-divider-line {
+  stroke: currentColor;
+  opacity: 0.2;
+}
+
+/* ─────────────────────────────────────────
+   Decorative overlay (number badge + lines)
+   Only decorative — no tags here anymore.
+   Top of label area: y=175/449 ≈ 39%
+───────────────────────────────────────── */
+.card-label-overlay {
+  position: absolute;
+  top: 39%;
+  left: 5%;
+  right: 5%;
+  /* bottom is not set — height is determined by content */
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.5rem 0.75rem 0;
+  pointer-events: none;
+}
+
+.label-top-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.label-project-number {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-color);
+  opacity: 0.5;
+  border: 1px solid currentColor;
+  padding: 0.1rem 0.4rem;
+  transition: color 0.4s ease, opacity 0.4s ease;
+}
+
+.project-card:hover .label-project-number {
+  color: #F5F3EE;
+  opacity: 0.85;
+}
+
+.label-rule {
+  height: 1px;
+  background-color: var(--text-color);
+  opacity: 0.15;
+  width: 100%;
+  transition: background-color 0.4s ease;
+}
+
+.project-card:hover .label-rule {
+  background-color: #F5F3EE;
+}
+
+.label-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.1rem;
+}
+
+.label-line-fake {
+  height: 1px;
+  background-color: var(--text-color);
+  opacity: 0.12;
+  width: 88%;
+  border-radius: 1px;
+  transition: background-color 0.4s ease, opacity 0.4s ease;
+}
+.label-line-fake--short   { width: 60%; }
+.label-line-fake--medium  { width: 75%; }
+.label-line-fake--shorter { width: 48%; }
+
+.project-card:hover .label-line-fake {
+  background-color: #F5F3EE;
+  opacity: 0.2;
+}
+
+/* ─────────────────────────────────────────
+   Card Content — tags + title + description
+   Anchored to bottom. Tags sit above title.
+───────────────────────────────────────── */
 .card-content {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 3rem 2.5rem;
+  padding: 1.5rem 2rem 2rem;
   z-index: 2;
   color: var(--text-color);
   transition: color 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 .project-card:hover .card-content {
-  color: var(--bg-color); /* Text changes to dark color for contrast */
+  color: #F5F3EE;
+}
+
+/* Tech tags — inside card-content, above the title */
+.label-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.label-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--text-color);
+  color: var(--text-color);
+  opacity: 0.75;
+  border-radius: 2px;
+  transition: color 0.4s ease, border-color 0.4s ease, opacity 0.4s ease;
+}
+
+.project-card:hover .label-tag {
+  color: #F5F3EE;
+  border-color: #F5F3EE;
+  opacity: 0.9;
 }
 
 .project-title {
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  line-height: 1.25;
+  margin: 0;
 }
 
 .project-desc {
   font-family: var(--font-body);
   font-weight: 400;
-  font-size: 1rem;
-  line-height: 1.5;
-  opacity: 0.9;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  opacity: 0.85;
+  margin: 0;
 }
 
-/* Mobile Responsiveness */
+/* Mobile */
 @media (max-width: 600px) {
   .project-card {
-    width: 100%;
-    max-width: 350px;
-    height: 385px; /* scale down height roughly proportional */
+    width: min(320px, 88vw);
+    height: auto;
+    aspect-ratio: 407 / 449;
+    margin-top: 1.25rem;
   }
 
   .card-content {
-    padding: 2rem 1.5rem;
+    padding: 1rem 1.5rem 1.5rem;
+    gap: 0.4rem;
+  }
+
+  .project-title {
+    font-size: 1.05rem;
+  }
+
+  .project-desc {
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  /* Hide 2 of 4 decorative lines to keep overlay compact */
+  .label-line-fake--medium,
+  .label-line-fake--shorter {
+    display: none;
+  }
+
+  .projects-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
   }
 }

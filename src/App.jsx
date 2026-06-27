@@ -1,27 +1,45 @@
-import { useState, useEffect } from 'react';
-import { FiSun, FiMoon, FiExternalLink, FiMail, FiPhone, FiMenu, FiX, FiFileText, FiSend } from 'react-icons/fi';
+import { useState, useEffect, useRef } from 'react';
+import { FiSun, FiMoon, FiExternalLink, FiMail, FiPhone, FiMenu, FiX, FiFileText, FiSend, FiCheck, FiAlertCircle, FiLoader } from 'react-icons/fi';
 import { FaLinkedin, FaGithub, FaBook, FaFlag, FaGlobe } from 'react-icons/fa';
 import { FaXTwitter } from 'react-icons/fa6';
 import { SiJavascript, SiPython, SiC, SiReact, SiNodedotjs, SiTailwindcss, SiMongodb, SiPostman, SiPandas, SiNumpy, SiJupyter, SiTensorflow, SiScikitlearn } from 'react-icons/si';
+import emailjs from '@emailjs/browser';
 import ProjectCard from './ProjectCard';
 import './index.css';
 import './skills.css';
+
+// ── EmailJS config ── set via env variables (VITE_EMAILJS_*) ──
+const EMAILJS_SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 function App() {
   const [theme, setTheme] = useState('dark');
   const [activeSection, setActiveSection] = useState('intro');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
-  const [contactSent, setContactSent] = useState(false);
+  const [contactStatus, setContactStatus] = useState('idle'); // idle | sending | sent | error
+  const formRef = useRef(null);
 
-  const handleContactSubmit = (e) => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, message } = contactForm;
-    const subject = encodeURIComponent(`Portfolio Contact from ${name}`);
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
-    window.location.href = `mailto:negianshul.work@gmail.com?subject=${subject}&body=${body}`;
-    setContactSent(true);
-    setTimeout(() => setContactSent(false), 4000);
+    if (contactStatus === 'sending') return;
+    setContactStatus('sending');
+    try {
+      await emailjs.sendForm(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        EMAILJS_PUBLIC_KEY
+      );
+      setContactStatus('sent');
+      setContactForm({ name: '', email: '', message: '' });
+      setTimeout(() => setContactStatus('idle'), 5000);
+    } catch (err) {
+      console.error('EmailJS error:', err);
+      setContactStatus('error');
+      setTimeout(() => setContactStatus('idle'), 5000);
+    }
   };
 
   useEffect(() => {
@@ -336,12 +354,13 @@ function App() {
             </div>
 
             {/* Right: mail form */}
-            <form className="contact-form" onSubmit={handleContactSubmit}>
+            <form className="contact-form" onSubmit={handleContactSubmit} ref={formRef}>
               <div className="contact-form-row">
                 <div className="form-group">
                   <label className="form-label" htmlFor="cf-name">Name</label>
                   <input
                     id="cf-name"
+                    name="from_name"
                     type="text"
                     className="form-input"
                     placeholder="Your name"
@@ -354,6 +373,7 @@ function App() {
                   <label className="form-label" htmlFor="cf-email">Email</label>
                   <input
                     id="cf-email"
+                    name="reply_to"
                     type="email"
                     className="form-input"
                     placeholder="your@email.com"
@@ -367,6 +387,7 @@ function App() {
                 <label className="form-label" htmlFor="cf-message">Message</label>
                 <textarea
                   id="cf-message"
+                  name="message"
                   className="form-input form-textarea"
                   placeholder="What's on your mind?"
                   rows={5}
@@ -375,10 +396,15 @@ function App() {
                   onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))}
                 />
               </div>
-              <button type="submit" className={`form-submit ${contactSent ? 'form-submit--sent' : ''}`}>
-                {contactSent
-                  ? '✓ Opening your email client…'
-                  : <><FiSend size={14} /> Send Message</>}
+              <button
+                type="submit"
+                className={`form-submit form-submit--${contactStatus}`}
+                disabled={contactStatus === 'sending'}
+              >
+                {contactStatus === 'sending' && <><FiLoader className="spin" size={14} /> Sending…</>}
+                {contactStatus === 'sent'    && <><FiCheck size={14} /> Message Sent!</>}
+                {contactStatus === 'error'   && <><FiAlertCircle size={14} /> Failed — try again</>}
+                {contactStatus === 'idle'    && <><FiSend size={14} /> Send Message</>}
               </button>
             </form>
           </div>

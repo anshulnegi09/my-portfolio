@@ -325,7 +325,7 @@ a {
 
 .contact-form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1rem;
 }
 
@@ -401,6 +401,28 @@ a {
   border-color: var(--accent-secondary);
   color: #F5F3EE;
   pointer-events: none;
+}
+
+.form-submit--sending {
+  opacity: 0.75;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.form-submit--error {
+  background-color: #c0392b;
+  border-color: #c0392b;
+  color: #fff;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+  display: inline-block;
 }
 
 .social-links-grid {
@@ -605,10 +627,15 @@ a {
     /* Slide in */
   }
 
+  html {
+    font-size: 16px;
+    /* Reduce from 18px to prevent rem-based overflow on mobile */
+  }
+
   .main-content {
     margin-left: 0;
-    padding: 6rem 1.5rem 2rem 1.5rem;
-    /* extra top padding for mobile-top-bar */
+    padding: 5rem 0.75rem 2rem 0.75rem;
+    /* Small horizontal padding keeps borders visible */
   }
 
   /* Intro section mobile */
@@ -621,18 +648,43 @@ a {
   }
 
   .intro-body {
-    padding: 2rem 1.5rem 3rem 1.5rem;
+    padding: 2rem 1.5rem 2rem 1.5rem;
+  }
+
+  /* Non-intro sections get extra horizontal padding on mobile */
+  .skills-section,
+  .projects-section,
+  .about-section,
+  .contact-section {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
+  /* Quick links: reset absolute positioning on mobile so they don't overlap */
+  .quick-links-wrapper {
+    position: static;
+    transform: none;
+    left: auto;
+    bottom: auto;
+    width: 100%;
+    margin-top: 1.5rem;
   }
 
   .quick-links {
     flex-wrap: wrap;
     justify-content: center;
+    width: 100%;
   }
 
   .quick-link {
     width: 50%;
     justify-content: center;
     border-bottom: 1px solid var(--bg-color);
+  }
+
+  /* Add bottom padding to intro-body so buttons sit inside the box */
+  .intro-body {
+    padding-bottom: 2rem;
   }
 
   /* Contact */

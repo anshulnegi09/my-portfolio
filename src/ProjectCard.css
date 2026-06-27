@@ -195,9 +195,9 @@
 }
 
 /* Mobile */
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .project-card {
-    width: min(320px, 88vw);
+    width: min(380px, 88vw);
     height: auto;
     aspect-ratio: 407 / 449;
     margin-top: 1.25rem;
